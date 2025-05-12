@@ -1,0 +1,156 @@
+# Linux Process and Command Cheat Sheet
+
+This cheat sheet covers practical examples for key Unix/Linux process management and shell command tasks based on the Travaux Pratiques N° 4 exercises.
+
+## Process Management
+
+### 1. `ps` - Display processes
+
+```bash
+ps                 # Shows running processes for current shell
+ps -l              # Long format, includes PID, PPID, PRI, NI, etc.
+```
+
+### 2. Foreground vs Background Execution
+
+```bash
+sleep 10           # Runs in foreground, waits 10s, blocks shell
+ps                 # Check process list
+sleep 10 &         # Runs in background, shell is usable
+ps                 # Now includes background sleep process
+```
+
+### 3. Killing Processes
+
+```bash
+ps                 # Find PID of target process
+kill -9 <pid>      # Force kill process (SIGKILL)
+kill -15 <pid>     # Graceful termination (SIGTERM)
+kill -2 <pid>      # Simulate Ctrl+C (SIGINT)
+```
+
+### 4. Jobs Control
+
+```bash
+cat                # Run a command in foreground
+Ctrl+Z             # Suspend
+jobs               # Show suspended jobs
+fg %1              # Resume in foreground
+bg %1              # Resume in background
+kill %1            # Kill a job by ID
+```
+
+## Redirection and Output Management
+
+### 1. Redirect stdout and stderr
+
+```bash
+ls -l fichier.txt > out-normal 2> out-err    # Separate stdout and stderr
+ls -l fichier1.txt >> out-normal             # Append to existing file
+ls -l fichier.txt fichierX.txt > out 2>&1    # Both to same file
+```
+
+### 2. Output to device (between terminals)
+
+```bash
+echo "hello" > /dev/pts/1     # Send output to another terminal
+```
+
+## Text Processing
+
+### 1. Word Count Example
+
+```bash
+cat virus | grep programmes | wc -l   # Count lines matching 'programmes'
+```
+
+### 2. File Listing and Sorting
+
+```bash
+ls -lS > save1    # Sort by file size and save to file
+```
+
+### 3. `grep` Special Characters
+
+```bash
+grep '\-text' file.txt     # Match string starting with '-'
+grep xxx *                 # Find files containing 'xxx'
+```
+
+### 4. File Excerpt Commands
+
+```bash
+wc exe3                    # Line, word, character count
+sed -n '3,5p' exe3         # Lines 3 to 5
+head -c 20 exe3            # First 20 chars
+tail -c 20 exe3            # Last 20 chars
+grep -v vers exe3          # Lines not containing 'vers'
+```
+
+### 5. Pattern Matching
+
+```bash
+grep -E 'Effacer|f21' exe3     # Match 'Effacer' or 'f21'
+```
+
+## `passwd` File Manipulations
+
+```bash
+cp /etc/passwd ~/passwd
+sort ~/passwd                              # Sort by login
+cut -d: -f1,3 ~/passwd | sort -t: -k2 > out
+tr ':' ' ' < out
+
+tail -n 5 out
+cut -c1-5 out
+who | wc -l                                # Logged-in users
+```
+
+## File Search with `find`
+
+```bash
+find / -name "signal.h" -print
+find ~ -name "core" -exec rm {} \;
+find . -type d -print
+find . -size 0k -ok rm {} \;
+find / \( -name a.out -o -name '*.o' \) -atime +7 -exec rm {} \;
+```
+
+### Search Examples
+
+```bash
+find / -name "*.c" 2>/dev/null     # Suppress errors
+find . -name "[Xx]*"
+find . ! -name "*[0-9]*"
+find /usr -size +2000 -perm 755
+find ~ -perm 666 -user $(whoami) | wc -l
+find . -name core -ok rm {} \;
+```
+
+## `departement` File Processing
+
+```bash
+sort -t '-' -k1 departement
+awk -F '-' '$3==1000' departement
+awk -F '-' '$3==1000 && $4==900' departement
+```
+
+## `cme` File Processing
+
+```bash
+grep '^classe#' cme
+awk -F '#' '$2=="Math" {print $3}' cme
+awk -F '#' '$1=="Classe1" {print $3}' cme
+```
+
+## System Stats
+
+```bash
+find . -type f | wc -l                          # Regular files count
+grep ":211:" /etc/group
+who | wc -l                                     # Logged in users
+```
+
+---
+
+This cheat sheet summarizes real practical Unix/Linux operations for beginner to intermediate shell usage.
